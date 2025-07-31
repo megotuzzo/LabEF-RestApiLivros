@@ -1,7 +1,10 @@
+using LaboratorioRestApi.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 
+namespace LaboratorioRestApi.Controllers;
+
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class EmprestimoController : ControllerBase
 {
     private readonly IEmprestimoRepository _emprestimoRepository;
@@ -20,7 +23,7 @@ public class EmprestimoController : ControllerBase
         }
 
         _emprestimoRepository.Add(newEmprestimo);
-        return CreatedAtAction(nameof(Add), new { id = newEmprestimo.Id }, newEmprestimo);
+        return CreatedAtAction(nameof(GetById), new { id = newEmprestimo.Id }, newEmprestimo);
     }
 
     [HttpPost]
@@ -35,7 +38,41 @@ public class EmprestimoController : ControllerBase
         return Ok();
     }
 
-    [HttpGet] 
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var emprestimo = _emprestimoRepository.GetById(id);
+        if (emprestimo == null)
+        {
+            return NotFound($"Emprestimo with ID {id} not found");
+        }
+        _emprestimoRepository.Delete(id);
+        return NoContent();
+    }
+
+    [HttpGet("{id}")]
+    public IActionResult GetById(int id)
+    {
+        var emprestimo = _emprestimoRepository.GetById(id);
+        if (emprestimo == null)
+        {
+            return NotFound($"Emprestimo with ID {id} not found");
+        }
+        return Ok(emprestimo);
+    }
+
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var emprestimos = _emprestimoRepository.GetAll();
+        if (emprestimos == null || !emprestimos.Any())
+        {
+            return NotFound("No emprestimos found");
+        }
+        return Ok(emprestimos);
+    }
+
+    [HttpGet("livro/{idLivro}")] 
     public IActionResult GetActiveEmprestimo(int idLivro)
     {
         var emprestimo = _emprestimoRepository.GetActiveEmprestimo(idLivro);

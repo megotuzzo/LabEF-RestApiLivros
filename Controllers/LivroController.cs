@@ -1,7 +1,10 @@
+using LaboratorioRestApi.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 
+namespace LaboratorioRestApi.Controllers;
+
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class LivroController : ControllerBase
 {
     private readonly ILivroRepository _livroRepository;
@@ -10,13 +13,6 @@ public class LivroController : ControllerBase
     {
         _livroRepository = livroRepository;
 
-    }
-
-    [HttpGet]
-    public IActionResult GetAllLivros()
-    {
-        var livros = _livroRepository.GetAllLivros();
-        return Ok(livros);
     }
 
     [HttpPost]
@@ -31,7 +27,49 @@ public class LivroController : ControllerBase
         return CreatedAtAction(nameof(Add), new { id = newLivro.Id }, newLivro);
     }
 
-    [HttpGet("/autor/{idAutor}")]
+    [HttpPost]
+    public IActionResult Update(int id, Livro updateLivro)
+    {
+        if (updateLivro == null)
+        {
+            return BadRequest("Livro cannot be null");
+        }
+        _livroRepository.Update(id, updateLivro);
+        return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var livro = _livroRepository.GetById(id);
+        if (livro == null)
+        {
+            return NotFound($"Livro with ID {id} not found");
+        }
+        _livroRepository.Delete(id);
+        return NoContent();
+    }
+
+
+    [HttpGet("{id}")]
+    public IActionResult GetById(int id)
+    {
+        var livro = _livroRepository.GetById(id);
+        if (livro == null)
+        {
+            return NotFound($"Livro with ID {id} not found");
+        }
+        return Ok(livro);
+    }
+
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var livros = _livroRepository.GetAll();
+        return Ok(livros);
+    }
+
+    [HttpGet("autor/{idAutor}")]
     public IActionResult GetLivroByAutor(int idAutor)
     {
         var livros = _livroRepository.GetLivroByAutor(idAutor);
