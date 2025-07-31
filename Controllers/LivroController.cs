@@ -27,26 +27,30 @@ public class LivroController : ControllerBase
         return CreatedAtAction(nameof(Add), new { id = newLivro.Id }, newLivro);
     }
 
-    [HttpPost]
-    public IActionResult Update(int id, Livro updateLivro)
+    [HttpPost("{id}")]
+    public IActionResult Update(int id, Livro updatedLivro)
     {
-        if (updateLivro == null)
+        if (updatedLivro == null)
         {
             return BadRequest("Livro cannot be null");
         }
-        _livroRepository.Update(id, updateLivro);
+
+        if (id != updatedLivro.Id)
+        {
+            return BadRequest("ID mismatch");
+        }
+        _livroRepository.Update(id, updatedLivro);
         return Ok();
     }
 
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        var livro = _livroRepository.GetById(id);
-        if (livro == null)
+        var sucesso = _livroRepository.Delete(id);
+        if (!sucesso)
         {
-            return NotFound($"Livro with ID {id} not found");
+            return NotFound();
         }
-        _livroRepository.Delete(id);
         return NoContent();
     }
 

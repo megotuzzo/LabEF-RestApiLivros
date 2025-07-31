@@ -25,28 +25,31 @@ public class AutorController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = newAutor.Id }, newAutor);
     }
 
-    [HttpPost]
-    public IActionResult Update(int id, Autor updateAutor)
+    [HttpPost("{id}")]
+    public IActionResult Update(int id, Autor updatedAutor)
     {
-        if (updateAutor == null)
+        if (updatedAutor == null)
         {
             return BadRequest("Autor cannot be null");
         }
 
-        _autorRepository.Update(id, updateAutor);
+        if (id != updatedAutor.Id)
+        {
+            return BadRequest("ID mismatch");
+        }
+
+        _autorRepository.Update(id, updatedAutor);
         return Ok();
     }
 
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        var autor = _autorRepository.GetById(id);
-        if (autor == null)
+        var sucesso = _autorRepository.Delete(id);
+        if (!sucesso)
         {
-            return NotFound($"Author with ID {id} not found");
+            return NotFound();
         }
-
-        _autorRepository.Delete(id);
         return NoContent();
     }
 
@@ -73,7 +76,7 @@ public class AutorController : ControllerBase
     }
 
 
-    [HttpGet("{lastName}")]
+    [HttpGet("sobrenome/{lastName}")]
     public IActionResult GetAutoresByLastName(string lastName)
     {
         var autores = _autorRepository.GetAutoresByLastName(lastName);

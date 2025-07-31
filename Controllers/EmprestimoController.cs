@@ -26,12 +26,16 @@ public class EmprestimoController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = newEmprestimo.Id }, newEmprestimo);
     }
 
-    [HttpPost]
+    [HttpPost("{id}")]
     public IActionResult Update(int id, Emprestimo updatedEmprestimo)
     {
         if (updatedEmprestimo == null)
         {
             return BadRequest("Emprestimo cannot be null");
+        }
+        if (id != updatedEmprestimo.Id)
+        {
+            return BadRequest("ID mismatch");
         }
 
         _emprestimoRepository.Update(id, updatedEmprestimo);
@@ -41,12 +45,11 @@ public class EmprestimoController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        var emprestimo = _emprestimoRepository.GetById(id);
-        if (emprestimo == null)
+       var sucesso = _emprestimoRepository.Delete(id);
+        if (!sucesso)
         {
-            return NotFound($"Emprestimo with ID {id} not found");
+            return NotFound();
         }
-        _emprestimoRepository.Delete(id);
         return NoContent();
     }
 
