@@ -10,7 +10,11 @@ builder.Services.AddControllers()
                     .AddJsonOptions(options =>
                         options.JsonSerializerOptions
                         .ReferenceHandler = ReferenceHandler.IgnoreCycles);
+                        
 builder.Services.AddOpenApi();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -18,11 +22,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwaggerUI(options =>
-                {
-                    options.SwaggerEndpoint("/api/v1.json", "Laboratorio REST API V1");
-                    options.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
-                });
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
