@@ -1,6 +1,11 @@
+namespace LaboratorioRestApi.Repository.IRepository;
+
 public interface IEmprestimoRepository
 {
-    void Add(Emprestimo newEmprestimo);
-    void Update(int id, Emprestimo updatedEmprestimo);
+    Emprestimo Add(Emprestimo newEmprestimo);
+    bool Update(int id, Emprestimo updatedEmprestimo);
+    bool Delete(int id);
+    List<Emprestimo> GetAll();
+    Emprestimo GetById(int id);
     Emprestimo GetActiveEmprestimo(int idLivro);
 }

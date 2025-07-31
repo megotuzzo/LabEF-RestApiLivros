@@ -1,35 +1,64 @@
+using LaboratorioRestApi.Repository.IRepository;
+
+namespace LaboratorioRestApi.Repository;
+
 public class EmprestimoRepository : IEmprestimoRepository
 {
-    private List<Emprestimo> _listEmprestimos;
-    public EmprestimoRepository() {
-        _listEmprestimos = new List<Emprestimo>();
+    private readonly AppDbContext _context;
+    public EmprestimoRepository(AppDbContext context) {
+       _context = context;
     }
-    public void Add(Emprestimo newEmprestimo)
+    public Emprestimo Add(Emprestimo newEmprestimo)
     {
-        if (newEmprestimo == null)
+        _context.Emprestimos.Add(newEmprestimo);
+        _context.SaveChanges();
+
+        return newEmprestimo;
+    }
+
+    public bool Update(int id, Emprestimo updatedEmprestimo)
+    {
+        var existingEmprestimo = _context.Emprestimos.Find(id);
+        if (existingEmprestimo == null)
         {
-            return;
+            return false;
         }
 
-        _listEmprestimos.Add(newEmprestimo);
+        existingEmprestimo.DataDevolucao = updatedEmprestimo.DataDevolucao;
+        existingEmprestimo.DataRetirada = updatedEmprestimo.DataRetirada;
+        existingEmprestimo.Entregue = updatedEmprestimo.Entregue;
+
+        _context.SaveChanges();
+
+        return true;
+    }
+    public bool Delete(int id)
+    {
+        var emprestimo = _context.Emprestimos.Find(id);
+        if (emprestimo == null)
+        {
+            return false;
+        }
+
+        _context.Emprestimos.Remove(emprestimo);
+        _context.SaveChanges();
+
+        return true;
+    }
+
+    public List<Emprestimo> GetAll()
+    {
+        return _context.Emprestimos.ToList();
+    }
+
+    public Emprestimo GetById(int id)
+    {
+        return _context.Emprestimos.Find(id);
     }
 
     public Emprestimo GetActiveEmprestimo(int idLivro)
     {
-        var emprestimo = _listEmprestimos.Where(e => e.LivroId == idLivro && e.Entregue == false).FirstOrDefault();
+        var emprestimo = _context.Emprestimos.Where(e => e.LivroId == idLivro && e.Entregue == false).FirstOrDefault();
         return emprestimo;
-    }
-
-    public void Update(int id, Emprestimo updatedEmprestimo)
-    {
-        var emprestimo = _listEmprestimos.FirstOrDefault(e => e.Id == id);
-
-        if (emprestimo == null)
-        {
-            return;
-        }
-
-        _listEmprestimos.Remove(emprestimo);
-        _listEmprestimos.Add(updatedEmprestimo);
     }
 }

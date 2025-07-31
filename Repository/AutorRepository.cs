@@ -1,39 +1,66 @@
+using LaboratorioRestApi.Repository.IRepository;
+
+namespace LaboratorioRestApi.Repository;
 public class AutorRepository : IAutorRepository
 {
-    private List<Autor> _listAutores;
+    private readonly AppDbContext _context;
 
-    public AutorRepository()
+    public AutorRepository(AppDbContext context)
     {
-        _listAutores = new List<Autor>();
+        _context = context;
     }
 
-    public void Add(Autor newAutor)
+    public Autor Add(Autor newAutor)
     {
-        if (newAutor == null)
-        {
-            return;
-        }
+        _context.Autores.Add(newAutor);
+        _context.SaveChanges();
 
-        _listAutores.Add(newAutor);
+        return newAutor;
     }
 
-    public void Update(int id, Autor updateAutor)
+    public bool Update(int id, Autor updatedAutor)
     {
-        var autor = _listAutores.FirstOrDefault(a => a.Id == id);
-
-        if (autor == null)
+        var existingAutor = _context.Autores.Find(id);
+        if (existingAutor == null)
         {
-            return;
+            return false;
         }
 
-        _listAutores.Remove(autor);
-        _listAutores.Add(updateAutor);
+        existingAutor.PrimeiroNome = updatedAutor.PrimeiroNome;
+        existingAutor.UltimoNome = updatedAutor.UltimoNome;
+
+        _context.SaveChanges();
+        return true;
+    }
+
+    public bool Delete(int id)
+    {
+        var autor = _context.Autores.Find(id);
+        if (autor is null)
+        {
+            return false;
+        }
+
+        _context.Autores.Remove(autor);
+        _context.SaveChanges();
+
+        return true;
+    }
+
+    public List<Autor> GetAll()
+    {
+        return _context.Autores.ToList();
+    }
+
+    public Autor GetById(int id)
+    {
+        var autor = _context.Autores.Find(id);
+        return autor;
     }
 
     public List<Autor> GetAutoresByLastName(String lastName)
     {
-        var lastNameformat = lastName.ToLower();
-        return _listAutores.FindAll(a => a.UltimoNome == lastNameformat);
+        var lastNameFormat = lastName.ToLower();
+        return _context.Autores.Where(a => a.UltimoNome == lastNameFormat).ToList();
     }
-
 }

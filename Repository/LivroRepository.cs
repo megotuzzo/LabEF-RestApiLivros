@@ -1,28 +1,61 @@
+using LaboratorioRestApi.Repository.IRepository;
+
+namespace LaboratorioRestApi.Repository;
 
 public class LivroRepository : ILivroRepository
 {
-    private List<Livro> _listLivros;
+    private readonly AppDbContext _context;
 
-    public LivroRepository() {
-        _listLivros = new List<Livro>();
-    }
-    public void Add(Livro newLivro)
+    public LivroRepository(AppDbContext context)
     {
-        if (newLivro == null)
+        _context = context;
+    }
+    public Livro Add(Livro newLivro)
+    {
+        _context.Livros.Add(newLivro);
+        _context.SaveChanges();
+
+        return newLivro;
+    }
+
+    public bool Delete(int id)
+    {
+        var livro = _context.Livros.Find(id);
+        if (livro == null)
         {
-            return;
+            return false;
         }
-
-        _listLivros.Add(newLivro);
+        _context.Livros.Remove(livro);
+        _context.SaveChanges();
+        return true;
     }
 
-    public List<Livro> GetAllLivros()
+    public bool Update(int id, Livro updatedLivro)
     {
-        return _listLivros;
+        var existingLivro = _context.Livros.Find(id);
+        if (existingLivro == null)
+        {
+            return false;
+        }
+        existingLivro.Titulo = updatedLivro.Titulo;
+        existingLivro.AutorId = updatedLivro.AutorId;
+
+        _context.SaveChanges();
+        return true;
+    }
+
+    public List<Livro> GetAll()
+    {
+        return _context.Livros.ToList();
+    }
+
+    public Livro GetById(int id)
+    {
+        return _context.Livros.Find(id);
     }
 
     public List<Livro> GetLivroByAutor(int idAutor)
     {
-        return _listLivros.Where(l => l.AutorId == idAutor).ToList();
+        return _context.Livros.Where(l => l.AutorId == idAutor).ToList();
     }
 }
