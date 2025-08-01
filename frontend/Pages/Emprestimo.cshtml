@@ -1,0 +1,33 @@
+@page
+@model EmprestimoModel
+@{
+    ViewData["Title"] = "Emprestimos page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Emprestimos da Biblioteca</h1>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Livro</th>
+                <th>DataRetirada</th>
+                <th>DataDevolucao</th>
+                <th>Entregue</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var emprestimo in Model.Emprestimos)
+            {
+                <tr>
+                    <td>@emprestimo.Id</td>
+                    <td>@emprestimo.LivroId</td>
+                    <td>@Convert.ToDateTime(emprestimo.DataRetirada).ToString("dd/mm/yyyy")</td>
+                    <td>@Convert.ToDateTime(emprestimo.DataDevolucao).ToString("dd/mm/yyyy")</td>
+                    <td>@emprestimo.Entregue</td> 
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

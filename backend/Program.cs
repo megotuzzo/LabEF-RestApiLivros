@@ -16,7 +16,18 @@ builder.Services.AddControllers()
 builder.Services.AddScoped<IAutorRepository, AutorRepository>();
 builder.Services.AddScoped<ILivroRepository, LivroRepository>();
 builder.Services.AddScoped<IEmprestimoRepository, EmprestimoRepository>();
-                        
+
+//Configurando CORS para permitir requisições da aplicação Razor
+builder.Services.AddCors(option =>
+{
+    option.AddPolicy("AllowRazorApp", policy =>
+    {
+        policy.WithOrigins("https://localhost:8001")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddOpenApi();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -32,7 +43,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(); 
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
+
+app.UseCors("AllowRazorApp");
 
 app.UseAuthorization();
 

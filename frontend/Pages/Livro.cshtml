@@ -1,0 +1,29 @@
+@page
+@model LivroModel
+@{
+    ViewData["Title"] = "Livros page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Livros da Biblioteca</h1>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Titulo</th>
+                <th>Autor</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var livro in Model.Livros)
+            {
+                <tr>
+                    <td>@livro.Id</td>
+                    <td>@livro.Titulo</td>
+                    <td>@livro.AutorId</td> 
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
