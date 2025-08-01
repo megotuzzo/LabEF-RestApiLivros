@@ -29,3 +29,9 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.tech-pills .badge { /*Estilo Index.html*/
+    padding: 0.6em 1em; /* Deixa as pílulas um pouco maiores */
+    margin: 0.3em;       /* Adiciona um espaço entre elas */
+    font-size: 0.7rem;   /* Tamanho da fonte */
+}
