@@ -22,9 +22,9 @@
             {
                 <tr>
                     <td>@emprestimo.Id</td>
-                    <td>@emprestimo.LivroId</td>
-                    <td>@Convert.ToDateTime(emprestimo.DataRetirada).ToString("dd/mm/yyyy")</td>
-                    <td>@Convert.ToDateTime(emprestimo.DataDevolucao).ToString("dd/mm/yyyy")</td>
+                    <td>@emprestimo.LivroNome</td>
+                    <td>@emprestimo.DataRetirada.ToString("dd/MM/yyyy")</td>
+                    <td>@emprestimo.DataDevolucao.ToString("dd/MM/yyyy")</td>
                     <td>@emprestimo.Entregue</td> 
                 </tr>
             }

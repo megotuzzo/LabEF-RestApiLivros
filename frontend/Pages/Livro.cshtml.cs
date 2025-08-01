@@ -7,7 +7,7 @@ namespace LaboratorioRazor.Pages;
 public class LivroModel : PageModel
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    public List<Livro> Livros { get; set; } = new(); // Inicialize a lista
+    public List<LivroDTO> Livros { get; set; } = new(); // Inicialize a lista
 
     public LivroModel(IHttpClientFactory httpClientFactory)
     {
@@ -24,7 +24,7 @@ public class LivroModel : PageModel
         if (response.IsSuccessStatusCode)
         {
             var contentStream = await response.Content.ReadAsStreamAsync();
-            Livros = await JsonSerializer.DeserializeAsync<List<Livro>>(contentStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            Livros = await JsonSerializer.DeserializeAsync<List<LivroDTO>>(contentStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
     }
 }

@@ -7,7 +7,7 @@ namespace LaboratorioRazor.Pages;
 public class EmprestimoModel : PageModel
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    public List<Emprestimo> Emprestimos { get; set; } = new(); // Inicialize a lista
+    public List<EmprestimoDTO> Emprestimos { get; set; } = new(); // Inicialize a lista
 
     public EmprestimoModel(IHttpClientFactory httpClientFactory)
     {
@@ -24,7 +24,7 @@ public class EmprestimoModel : PageModel
         if (response.IsSuccessStatusCode)
         {
             var contentStream = await response.Content.ReadAsStreamAsync();
-            Emprestimos = await JsonSerializer.DeserializeAsync<List<Emprestimo>>(contentStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            Emprestimos = await JsonSerializer.DeserializeAsync<List<EmprestimoDTO>>(contentStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
     }
 }

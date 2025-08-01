@@ -4,6 +4,7 @@ public class Livro
     public String Titulo { get; set; }
 
     public int AutorId { get; set; }
+    public string AutorNome { get; set; }
 }
 
 

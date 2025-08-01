@@ -7,7 +7,7 @@ namespace LaboratorioRazor.Pages;
 public class AutorModel : PageModel
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    public List<Autor> Autores { get; set; } = new(); // Inicialize a lista
+    public List<AutorDTO> Autores { get; set; } = new(); // Inicialize a lista
 
     public AutorModel(IHttpClientFactory httpClientFactory)
     {
@@ -24,7 +24,7 @@ public class AutorModel : PageModel
         if (response.IsSuccessStatusCode)
         {
             var contentStream = await response.Content.ReadAsStreamAsync();
-            Autores = await JsonSerializer.DeserializeAsync<List<Autor>>(contentStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            Autores = await JsonSerializer.DeserializeAsync<List<AutorDTO>>(contentStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
     }
 }
