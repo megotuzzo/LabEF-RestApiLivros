@@ -1,4 +1,6 @@
 using System.Text.Json.Serialization;
+using LaboratorioRestApi.Repository;
+using LaboratorioRestApi.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,10 @@ builder.Services.AddControllers()
                     .AddJsonOptions(options =>
                         options.JsonSerializerOptions
                         .ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+builder.Services.AddScoped<IAutorRepository, AutorRepository>();
+builder.Services.AddScoped<ILivroRepository, LivroRepository>();
+builder.Services.AddScoped<IEmprestimoRepository, EmprestimoRepository>();
                         
 builder.Services.AddOpenApi();
 
