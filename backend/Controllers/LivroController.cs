@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using LaboratorioRestApi.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +30,7 @@ public class LivroController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update (int id, Livro updatedLivro)
+    public async Task<IActionResult> Update(int id, Livro updatedLivro)
     {
         if (id != updatedLivro.Id)
         {
@@ -59,7 +60,7 @@ public class LivroController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var livro = await _livroRepository.GetByIdAsync(id);
+        var livro = await _livroRepository.GetByIdDTOAsync(id);
         if (livro == null)
         {
             return NotFound();
@@ -70,7 +71,7 @@ public class LivroController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var livros = await _livroRepository.GetAllAsync();
+        var livros = await _livroRepository.GetAllDTOAsync();
         return Ok(livros);
     }
 
@@ -80,4 +81,5 @@ public class LivroController : ControllerBase
         var livros = await _livroRepository.GetLivroByAutorAsync(idAutor);
         return Ok(livros);
     }
+
 }

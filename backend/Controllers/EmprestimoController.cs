@@ -56,7 +56,7 @@ public class EmprestimoController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var emprestimo = await _emprestimoRepository.GetByIdAsync(id);
+        var emprestimo = await _emprestimoRepository.GetByIdDTOAsync(id);
         if (emprestimo == null)
         {
             return NotFound();
@@ -67,7 +67,7 @@ public class EmprestimoController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var emprestimos = await _emprestimoRepository.GetAllAsync();
+        var emprestimos = await _emprestimoRepository.GetAllDTOAsync();
         return Ok(emprestimos);
     }
 

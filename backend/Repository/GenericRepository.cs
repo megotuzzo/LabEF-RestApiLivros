@@ -26,7 +26,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         {
             return false;
         }
-        
+
         _context.Entry(existingEntity).CurrentValues.SetValues(entity);
         await _context.SaveChangesAsync();
         return true;

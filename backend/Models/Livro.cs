@@ -4,6 +4,8 @@ public class Livro
     public String Titulo { get; set; }
 
     public int AutorId { get; set; }
+
+    public virtual Autor Autor { get; set; }
 }
 
 

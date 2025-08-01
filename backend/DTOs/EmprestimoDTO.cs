@@ -1,4 +1,4 @@
-public class Emprestimo
+public class EmprestimoDTO
 {
     public int Id { get; set; }
     public DateTime DataRetirada { get; set; }
@@ -6,6 +6,6 @@ public class Emprestimo
     public bool Entregue { get; set; }
 
     public int LivroId { get; set; }
-    public virtual Livro Livro { get; set; }
+    public virtual string LivroNome { get; set; }
 
 }

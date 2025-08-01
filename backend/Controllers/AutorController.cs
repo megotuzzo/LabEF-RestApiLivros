@@ -56,7 +56,7 @@ public class AutorController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var autor = await _autorRepository.GetByIdAsync(id);
+        var autor = await _autorRepository.GetByIdDTOAsync(id);
         if (autor == null)
         {
             return NotFound();
@@ -67,7 +67,7 @@ public class AutorController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var autores = await _autorRepository.GetAllAsync();
+        var autores = await _autorRepository.GetAllDTOAsync();
         return Ok(autores);
     }
 
