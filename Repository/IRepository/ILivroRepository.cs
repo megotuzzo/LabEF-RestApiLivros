@@ -1,11 +1,6 @@
 namespace LaboratorioRestApi.Repository.IRepository;
 
-public interface ILivroRepository
+public interface ILivroRepository : IGenericRepository<Livro>
 {
-    Livro Add(Livro newLivro);
-    bool Update(int id, Livro updatedLivro);
-    bool Delete(int id);
-    List<Livro> GetAll();
-    Livro GetById(int id);
-    List<Livro> GetLivroByAutor(int idAutor);
+    Task<List<Livro>> GetLivroByAutorAsync(int idAutor);
 }

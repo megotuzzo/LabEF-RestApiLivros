@@ -1,11 +1,6 @@
 namespace LaboratorioRestApi.Repository.IRepository;
 
-public interface IEmprestimoRepository
+public interface IEmprestimoRepository : IGenericRepository<Emprestimo>
 {
-    Emprestimo Add(Emprestimo newEmprestimo);
-    bool Update(int id, Emprestimo updatedEmprestimo);
-    bool Delete(int id);
-    List<Emprestimo> GetAll();
-    Emprestimo GetById(int id);
-    Emprestimo GetActiveEmprestimo(int idLivro);
+    Task<Emprestimo?> GetActiveEmprestimoAsync (int idLivro);
 }

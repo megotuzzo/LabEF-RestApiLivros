@@ -1,61 +1,19 @@
+using System.Threading.Tasks;
 using LaboratorioRestApi.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace LaboratorioRestApi.Repository;
 
-public class LivroRepository : ILivroRepository
+public class LivroRepository : GenericRepository<Livro>, ILivroRepository
 {
-    private readonly AppDbContext _context;
 
-    public LivroRepository(AppDbContext context)
+    public LivroRepository(AppDbContext context) : base(context)
     {
-        _context = context;
-    }
-    public Livro Add(Livro newLivro)
-    {
-        _context.Livros.Add(newLivro);
-        _context.SaveChanges();
-
-        return newLivro;
+        
     }
 
-    public bool Delete(int id)
+    public async Task<List<Livro>> GetLivroByAutorAsync (int idAutor)
     {
-        var livro = _context.Livros.Find(id);
-        if (livro == null)
-        {
-            return false;
-        }
-        _context.Livros.Remove(livro);
-        _context.SaveChanges();
-        return true;
-    }
-
-    public bool Update(int id, Livro updatedLivro)
-    {
-        var existingLivro = _context.Livros.Find(id);
-        if (existingLivro == null)
-        {
-            return false;
-        }
-        existingLivro.Titulo = updatedLivro.Titulo;
-        existingLivro.AutorId = updatedLivro.AutorId;
-
-        _context.SaveChanges();
-        return true;
-    }
-
-    public List<Livro> GetAll()
-    {
-        return _context.Livros.ToList();
-    }
-
-    public Livro GetById(int id)
-    {
-        return _context.Livros.Find(id);
-    }
-
-    public List<Livro> GetLivroByAutor(int idAutor)
-    {
-        return _context.Livros.Where(l => l.AutorId == idAutor).ToList();
+        return await _context.Livros.Where(l => l.AutorId == idAutor).ToListAsync();
     }
 }
