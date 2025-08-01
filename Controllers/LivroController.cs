@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using LaboratorioRestApi.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,37 +17,37 @@ public class LivroController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Add(Livro newLivro)
+    public async Task<IActionResult> Create(Livro newLivro)
     {
         if (newLivro == null)
         {
             return BadRequest("Livro cannot be null");
         }
 
-        _livroRepository.Add(newLivro);
-        return CreatedAtAction(nameof(Add), new { id = newLivro.Id }, newLivro);
+        var livro = await _livroRepository.CreateAsync(newLivro);
+        return CreatedAtAction(nameof(GetById), new { id = livro.Id }, livro);
     }
 
-    [HttpPost("{id}")]
-    public IActionResult Update(int id, Livro updatedLivro)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update (int id, Livro updatedLivro)
     {
-        if (updatedLivro == null)
-        {
-            return BadRequest("Livro cannot be null");
-        }
-
         if (id != updatedLivro.Id)
         {
             return BadRequest("ID mismatch");
         }
-        _livroRepository.Update(id, updatedLivro);
+
+        var sucesso = await _livroRepository.UpdateAsync(id, updatedLivro);
+        if (!sucesso)
+        {
+            return NotFound();
+        }
         return Ok();
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var sucesso = _livroRepository.Delete(id);
+        var sucesso = await _livroRepository.DeleteAsync(id);
         if (!sucesso)
         {
             return NotFound();
@@ -56,31 +57,27 @@ public class LivroController : ControllerBase
 
 
     [HttpGet("{id}")]
-    public IActionResult GetById(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-        var livro = _livroRepository.GetById(id);
+        var livro = await _livroRepository.GetByIdAsync(id);
         if (livro == null)
         {
-            return NotFound($"Livro with ID {id} not found");
+            return NotFound();
         }
         return Ok(livro);
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll()
     {
-        var livros = _livroRepository.GetAll();
+        var livros = await _livroRepository.GetAllAsync();
         return Ok(livros);
     }
 
     [HttpGet("autor/{idAutor}")]
-    public IActionResult GetLivroByAutor(int idAutor)
+    public async Task<IActionResult> GetLivroByAutor(int idAutor)
     {
-        var livros = _livroRepository.GetLivroByAutor(idAutor);
-        if (livros == null || !livros.Any())
-        {
-            return NotFound($"No books found for author with ID {idAutor}");
-        }
+        var livros = await _livroRepository.GetLivroByAutorAsync(idAutor);
         return Ok(livros);
     }
 }

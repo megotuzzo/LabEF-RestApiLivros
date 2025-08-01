@@ -15,37 +15,37 @@ public class EmprestimoController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Add(Emprestimo newEmprestimo)
+    public async Task<IActionResult> Create (Emprestimo newEmprestimo)
     {
         if (newEmprestimo == null)
         {
             return BadRequest("Emprestimo cannot be null");
         }
 
-        _emprestimoRepository.Add(newEmprestimo);
-        return CreatedAtAction(nameof(GetById), new { id = newEmprestimo.Id }, newEmprestimo);
+        var emprestimo = await _emprestimoRepository.CreateAsync(newEmprestimo);
+        return CreatedAtAction(nameof(GetById), new { id = emprestimo.Id }, emprestimo);
     }
 
-    [HttpPost("{id}")]
-    public IActionResult Update(int id, Emprestimo updatedEmprestimo)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, Emprestimo updatedEmprestimo)
     {
-        if (updatedEmprestimo == null)
-        {
-            return BadRequest("Emprestimo cannot be null");
-        }
         if (id != updatedEmprestimo.Id)
         {
             return BadRequest("ID mismatch");
         }
 
-        _emprestimoRepository.Update(id, updatedEmprestimo);
-        return Ok();
+        var sucesso = await _emprestimoRepository.UpdateAsync(id, updatedEmprestimo);
+        if (!sucesso)
+        {
+            return NotFound();
+        }
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-       var sucesso = _emprestimoRepository.Delete(id);
+       var sucesso = await _emprestimoRepository.DeleteAsync(id);
         if (!sucesso)
         {
             return NotFound();
@@ -54,35 +54,27 @@ public class EmprestimoController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetById(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-        var emprestimo = _emprestimoRepository.GetById(id);
+        var emprestimo = await _emprestimoRepository.GetByIdAsync(id);
         if (emprestimo == null)
         {
-            return NotFound($"Emprestimo with ID {id} not found");
+            return NotFound();
         }
         return Ok(emprestimo);
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll()
     {
-        var emprestimos = _emprestimoRepository.GetAll();
-        if (emprestimos == null || !emprestimos.Any())
-        {
-            return NotFound("No emprestimos found");
-        }
+        var emprestimos = await _emprestimoRepository.GetAllAsync();
         return Ok(emprestimos);
     }
 
     [HttpGet("livro/{idLivro}")] 
-    public IActionResult GetActiveEmprestimo(int idLivro)
+    public async Task<IActionResult> GetActiveEmprestimo(int idLivro)
     {
-        var emprestimo = _emprestimoRepository.GetActiveEmprestimo(idLivro);
-        if (emprestimo == null)
-        {
-            return NotFound($"No active loan found for book with ID {idLivro}");
-        }
+        var emprestimo = await _emprestimoRepository.GetActiveEmprestimoAsync(idLivro);
         return Ok(emprestimo);
     }
 }

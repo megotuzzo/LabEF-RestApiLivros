@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using LaboratorioRestApi.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,38 +15,37 @@ public class AutorController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Add(Autor newAutor)
+    public async Task<IActionResult> Create(Autor newAutor)
     {
         if (newAutor == null)
         {
             return BadRequest("Autor cannot be null");
         }
 
-        _autorRepository.Add(newAutor);
-        return CreatedAtAction(nameof(GetById), new { id = newAutor.Id }, newAutor);
+        var autor = await _autorRepository.CreateAsync(newAutor);
+        return CreatedAtAction(nameof(GetById), new { id = autor.Id }, autor);
     }
 
-    [HttpPost("{id}")]
-    public IActionResult Update(int id, Autor updatedAutor)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, Autor updatedAutor)
     {
-        if (updatedAutor == null)
-        {
-            return BadRequest("Autor cannot be null");
-        }
-
         if (id != updatedAutor.Id)
         {
             return BadRequest("ID mismatch");
         }
 
-        _autorRepository.Update(id, updatedAutor);
-        return Ok();
+        var sucesso = await _autorRepository.UpdateAsync(id, updatedAutor);
+        if (!sucesso)
+        {
+            return NotFound();
+        }
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var sucesso = _autorRepository.Delete(id);
+        var sucesso = await _autorRepository.DeleteAsync(id);
         if (!sucesso)
         {
             return NotFound();
@@ -54,36 +54,28 @@ public class AutorController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetById(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-        var autor = _autorRepository.GetById(id);
+        var autor = await _autorRepository.GetByIdAsync(id);
         if (autor == null)
         {
-            return NotFound($"Author with ID {id} not found");
+            return NotFound();
         }
         return Ok(autor);
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll()
     {
-        var autores = _autorRepository.GetAll();
-        if (autores == null || !autores.Any())
-        {
-            return NotFound("No authors found");
-        }
+        var autores = await _autorRepository.GetAllAsync();
         return Ok(autores);
     }
 
 
     [HttpGet("sobrenome/{lastName}")]
-    public IActionResult GetAutoresByLastName(string lastName)
+    public async Task<IActionResult> GetAutoresByLastName(string lastName)
     {
-        var autores = _autorRepository.GetAutoresByLastName(lastName);
-        if (autores == null || !autores.Any())
-        {
-            return NotFound($"No authors found with last name {lastName}");
-        }
+        var autores = await _autorRepository.GetAutoresByLastNameAsync(lastName);
         return Ok(autores);
     }
 }
